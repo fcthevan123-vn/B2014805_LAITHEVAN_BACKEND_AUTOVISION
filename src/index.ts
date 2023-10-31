@@ -1,6 +1,6 @@
 import express from "express";
-// import cookieParser from "cookie-parser";
-
+import cookieParser from "cookie-parser";
+import route from "./routers";
 import connectDb from "./config";
 import cors from "cors";
 import * as dotenv from "dotenv";
@@ -10,7 +10,10 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // use cookie
-// app.use(cookieParser());
+app.use(cookieParser());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use(
   cors({
@@ -24,14 +27,10 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("Test server");
-});
-
 // Connect to db
 connectDb();
 
-// route(app);
+route(app);
 
 app.listen(port, () => {
   console.log(`App is listening on port http://localhost:${port}`);
