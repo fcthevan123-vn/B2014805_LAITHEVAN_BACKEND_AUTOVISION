@@ -1,21 +1,18 @@
 import express from "express";
+
 import { AuthController } from "../../controllers";
 import validate from "../../utils/yupValidations";
 import { userValidation } from "../../utils/validations";
 import { checkToken } from "../../middlewares";
-
 const router = express.Router();
-
-// /api/v1/auth
+// /api/v1/staff
 
 router.get(
   "/login",
   validate(userValidation.loginSchema),
-  AuthController.handleLogin
+  AuthController.handleLoginAdmin
 );
-router.get("/logout", AuthController.handleLogout);
-router.get("/get-profile", checkToken, AuthController.handleGetProfile);
 
-// router.post("/logout", authorizationToken, AuthenticateController.handleLogout);
+router.get("/get-profile", checkToken, AuthController.handleGetProfileAdmin);
 
 export default router;

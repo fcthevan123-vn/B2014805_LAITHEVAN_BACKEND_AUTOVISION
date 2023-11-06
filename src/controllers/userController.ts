@@ -3,15 +3,15 @@ import { UserService } from "../services";
 
 class UserController {
   async handleCreateUser(req: Request, res: Response) {
-    const { fullName, email, password, phone, address } = req.body;
+    const { HoTenKH, email, password, SoDienThoai, DiaChi } = req.body;
 
     try {
       const response = await UserService.createUser({
-        fullName,
+        HoTenKH,
         email,
         password,
-        phone,
-        address,
+        SoDienThoai,
+        DiaChi,
       });
       if (response.statusCode === 0) {
         return res.status(200).json(response);

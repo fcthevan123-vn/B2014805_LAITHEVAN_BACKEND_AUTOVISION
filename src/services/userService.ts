@@ -5,7 +5,13 @@ const saltRounds = process.env.SALT_ROUNDS as unknown as number;
 const salt = bcrypt.genSaltSync(saltRounds);
 
 class UserService {
-  async createUser({ fullName, email, password, phone, address }: UserTypeTS) {
+  async createUser({
+    HoTenKH,
+    email,
+    password,
+    SoDienThoai,
+    DiaChi,
+  }: UserTypeTS) {
     const userExits = await User.findOne({ email: email });
     if (userExits) {
       return {
@@ -13,15 +19,15 @@ class UserService {
         message: "Người dùng đã tồn tại",
       };
     }
-    const hashPassword = bcrypt.hashSync(password, salt);
+    const hashpassword = bcrypt.hashSync(password, salt);
     try {
       const userDoc = await User.create({
-        fullName,
+        HoTenKH,
         email,
-        password: hashPassword,
+        password: hashpassword,
 
-        phone,
-        address,
+        SoDienThoai,
+        DiaChi,
       });
 
       if (!userDoc) {

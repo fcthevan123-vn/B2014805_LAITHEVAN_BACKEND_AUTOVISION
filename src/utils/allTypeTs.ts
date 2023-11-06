@@ -1,8 +1,8 @@
 export type UserTypeTS = {
-  fullName: string;
+  HoTenKH: string;
   email: string;
   password: string;
   type?: string;
-  phone: number;
-  address: string;
+  SoDienThoai: number;
+  DiaChi: string;
 };

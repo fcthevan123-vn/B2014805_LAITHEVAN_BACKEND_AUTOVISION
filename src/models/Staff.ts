@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 const { Schema, models } = mongoose;
-// Bảng người dùng
-const userSchema = new Schema(
+// Bảng nhân viên
+const staffSchema = new Schema(
   {
-    HoTenKH: String,
+    HoTenNV: String,
     email: { type: String, trim: true },
     password: String,
     SoDienThoai: String,
     DiaChi: String,
+    ChucVu: String,
   },
   { timestamps: true }
 );
 
-const User = models.User || mongoose.model("User", userSchema);
+const Staff = models.Staff || mongoose.model("Staff", staffSchema);
 
-export default User;
+export default Staff;

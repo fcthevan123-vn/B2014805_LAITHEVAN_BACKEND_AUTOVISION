@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
+import multer from "multer";
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
@@ -44,3 +44,10 @@ export function checkToken(req: Request, res: Response, next: NextFunction) {
       .json({ message: "Lỗi tại handleCreateUser ", err: err.message });
   }
 }
+
+// multer
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+export default upload;

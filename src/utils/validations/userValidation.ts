@@ -4,8 +4,8 @@ const userValidation = {
   createUser: yup.object({
     body: yup.object({
       email: yup.string().email().required("Điền thiếu email"),
-      phone: yup.number().required("Điền thiếu email"),
-      address: yup.string().required("Điền thiếu địa chỉ"),
+      SoDienThoai: yup.number().required("Điền thiếu email"),
+      DiaChi: yup.string().required("Điền thiếu địa chỉ"),
       password: yup.string().required("Thiếu mật khẩu"),
     }),
   }),

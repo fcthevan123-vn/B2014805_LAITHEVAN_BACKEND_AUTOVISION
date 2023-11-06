@@ -5,7 +5,7 @@ import validate from "../../utils/yupValidations";
 
 const router = express.Router();
 // /api/v1/user
-router.get(
+router.post(
   "/create",
   validate(userValidation.createUser),
   userController.handleCreateUser
