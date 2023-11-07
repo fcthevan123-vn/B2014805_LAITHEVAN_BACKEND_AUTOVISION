@@ -4,6 +4,7 @@ const { Schema, models } = mongoose;
 const imageProductSchema = new Schema(
   {
     TenHinh: String,
+    UrlHinh: String,
   },
   { timestamps: true }
 );

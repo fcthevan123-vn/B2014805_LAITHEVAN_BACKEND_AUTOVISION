@@ -8,13 +8,13 @@ const productSchema = new Schema(
     Gia: String,
     SoLuongHang: String,
     GhiChu: String,
-    ChucVu: String,
-    HinhHH: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "HinhHH",
-      },
-    ],
+    TrongLuong: String,
+    ChatLieu: String,
+    PhuHopVoi: String,
+    CongNgheDem: String,
+    DeNgoai: String,
+    NoiBat: { type: Boolean, default: false },
+    HinhHH: [{ type: mongoose.Types.ObjectId, ref: "ImageProduct" }],
   },
   { timestamps: true }
 );

@@ -6,8 +6,10 @@ const router = express.Router();
 // /api/v1/product
 router.post(
   "/create",
-  upload.array("images", 5),
+  upload.array("HinhUpload", 5),
   ProductController.handleCreateProduct
 );
+
+router.get("/all-products", ProductController.handleGetAllProducts);
 
 export default router;
