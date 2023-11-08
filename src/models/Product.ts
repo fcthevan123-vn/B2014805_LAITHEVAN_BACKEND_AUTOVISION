@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import mongoose from "mongoose";
+import ImageProduct from "./ImageProduct";
 const { Schema, models } = mongoose;
 // Bảng hàng hoá
 const productSchema = new Schema(

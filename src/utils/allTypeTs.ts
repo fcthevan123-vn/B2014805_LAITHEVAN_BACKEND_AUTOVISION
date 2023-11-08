@@ -24,6 +24,7 @@ export type HangHoaTS = {
   NoiBat: string;
   HinhHH?: string[];
   HinhUpload?: File[];
+  HinhXoa?: string[];
 };
 
 export type HinhHH = {

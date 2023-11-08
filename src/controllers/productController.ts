@@ -83,6 +83,128 @@ class UserController {
         .json({ message: "Lỗi tại handleCreateProduct ", err: err.message });
     }
   }
+
+  async handleUpdateProduct(req: Request, res: Response) {
+    const { id } = req.params;
+    const {
+      TenHH,
+      MoTaHH,
+      Gia,
+      SoLuongHang,
+      TrongLuong,
+      ChatLieu,
+      PhuHopVoi,
+      CongNgheDem,
+      DeNgoai,
+      HinhXoa,
+      HinhHH,
+      GhiChu,
+      NoiBat,
+    } = req.body as HangHoaTS;
+
+    const files = req.files as Express.Multer.File[];
+    const uploadedImageData: HinhHH[] = [];
+    const uploadedImageIds: string[] = [];
+    let mergeImage;
+
+    try {
+      if (HinhXoa && HinhXoa.length > 0) {
+        if (Array.isArray(HinhXoa)) {
+          for (const imgId of HinhXoa) {
+            const deleteImage = await imageProductService.deleteImageProduct(
+              imgId
+            );
+            if (deleteImage.statusCode === 0) {
+              continue;
+            }
+          }
+        } else {
+          const deleteImage = await imageProductService.deleteImageProduct(
+            HinhXoa
+          );
+        }
+      }
+
+      if (files.length > 0) {
+        for (const file of files) {
+          const uploadImage = await imageProductService.uploadImage(file);
+          const dataImg = {
+            TenHinh: uploadImage.public_id,
+            UrlHinh: uploadImage.url,
+          };
+          uploadedImageData.push(dataImg);
+        }
+      }
+
+      if (uploadedImageData.length > 0) {
+        for (const data of uploadedImageData) {
+          const createImg = await imageProductService.createImageProduct(data);
+          uploadedImageIds.push(createImg.data._id);
+        }
+      }
+
+      if (HinhHH && HinhHH.length > 0) {
+        if (Array.isArray(HinhHH)) {
+          mergeImage = [...HinhHH, ...uploadedImageIds];
+        } else {
+          mergeImage = [HinhHH, ...uploadedImageIds];
+        }
+      } else {
+        mergeImage = uploadedImageIds;
+      }
+
+      const productResponse: ResTS<HangHoaTS> =
+        await ProductService.updateProduct(
+          {
+            TenHH,
+            MoTaHH,
+            Gia,
+            SoLuongHang,
+            TrongLuong,
+            ChatLieu,
+            PhuHopVoi,
+            CongNgheDem,
+            DeNgoai,
+            GhiChu,
+            NoiBat,
+            HinhHH: mergeImage,
+          },
+          id
+        );
+
+      if (productResponse.statusCode !== 0) {
+        return res.status(401).json(productResponse);
+      }
+
+      return res.status(200).json({
+        statusCode: 0,
+        message: "Cập nhật sản phẩm thành công",
+      });
+    } catch (error) {
+      console.log("error", error);
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleUpdateProduct ", err: err.message });
+    }
+  }
+
+  async handleDeleteProduct(req: Request, res: Response) {
+    const { id } = req.params;
+    try {
+      const response = await ProductService.deleteProduct(id);
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleDeleteProduct", err: err.message });
+    }
+  }
+
   async handleGetAllProducts(req: Request, res: Response) {
     try {
       const response = await ProductService.getAllProducts();
@@ -98,47 +220,28 @@ class UserController {
     }
   }
 
-  // async uploadImage(file: Express.Multer.File) {
-  //   let isError = false;
-  //   let idImg = null;
-  //   try {
-  //     const stream = cloudinary.uploader.upload_stream(
-  //       async (error, result) => {
-  //         if (result) {
-  //           const dataImage = {
-  //             TenHinh: result.public_id,
-  //             UrlHinh: result.url,
-  //           };
-  //           const response = await this.createImageProduct(dataImage);
-  //           console.log("loading");
-  //           if (response.statusCode === 0) {
-  //             console.log("response.data._id", response.data._id);
-  //             idImg = response.data._id;
-  //           } else {
-  //             isError = true;
-  //           }
-  //         }
-  //       }
-  //     );
-
-  //     streamifier.createReadStream(file.buffer).pipe(stream);
-  //     if (isError) {
-  //       return {
-  //         statusCode: 1,
-  //         message: "Thất bại",
-  //         data: "",
-  //       };
-  //     }
-
-  //     return {
-  //       statusCode: 0,
-  //       message: "Thanh cong",
-  //       data: idImg,
-  //     };
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   }
-  // }
+  async handleGetProductsById(req: Request, res: Response) {
+    const { id } = req.params;
+    console.log("id", id);
+    if (!id) {
+      return res.status(401).json({
+        statusCode: 2,
+        message: "Thiếu id",
+      });
+    }
+    try {
+      const response = await ProductService.getProductById(id);
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleGetProductsById", err: err.message });
+    }
+  }
 }
 
 export default new UserController();

@@ -49,6 +49,44 @@ class ImageProductService {
       };
     }
   }
+
+  async deleteImageProduct(imageId: string) {
+    try {
+      // Tìm hình trong cơ sở dữ liệu
+      const imageDoc = await ImageProduct.findById(imageId);
+      if (!imageDoc) {
+        return {
+          statusCode: 1,
+          message: "Không tìm thấy hình",
+        };
+      }
+
+      // Xoá hình từ Cloudinary
+      const result = await cloudinary.uploader.destroy(imageDoc.TenHinh);
+      console.log("result", result);
+      if (!result || result.result !== "ok") {
+        return {
+          statusCode: 1,
+          message: "Xoá hình từ Cloudinary thất bại",
+        };
+      }
+
+      // Xoá hình từ cơ sở dữ liệu
+      await ImageProduct.findByIdAndDelete(imageId);
+
+      return {
+        statusCode: 0,
+        message: "Xoá hình thành công",
+        data: imageDoc,
+      };
+    } catch (error) {
+      const err = error as Error;
+      return {
+        statusCode: 1,
+        message: err.message,
+      };
+    }
+  }
 }
 
 export default new ImageProductService();
