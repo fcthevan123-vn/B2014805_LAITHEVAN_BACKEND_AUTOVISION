@@ -111,7 +111,6 @@ class ProductServices {
 
   async getAllProducts() {
     try {
-      //   const productDoc = await Product.find().populate("ImageProduct");
       const productDoc = await Product.find().populate({
         path: "HinhHH",
         model: "ImageProduct",
@@ -129,6 +128,7 @@ class ProductServices {
         data: productDoc,
       };
     } catch (error) {
+      console.log("error", error);
       const err = error as Error;
       return {
         statusCode: -1,

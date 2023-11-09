@@ -13,7 +13,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-class UserController {
+class ProductController {
   async handleCreateProduct(req: Request, res: Response) {
     const {
       TenHH,
@@ -119,6 +119,7 @@ class UserController {
             }
           }
         } else {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const deleteImage = await imageProductService.deleteImageProduct(
             HinhXoa
           );
@@ -244,4 +245,4 @@ class UserController {
   }
 }
 
-export default new UserController();
+export default new ProductController();

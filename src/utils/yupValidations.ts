@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Request, Response, NextFunction } from "express"; // Import express types as an example, adjust as needed
-
+import { Request, Response, NextFunction } from "express";
+//  Hàm chung để kiểm validate
 const validate =
   (schema: any) => async (req: Request, res: Response, next: NextFunction) => {
     try {

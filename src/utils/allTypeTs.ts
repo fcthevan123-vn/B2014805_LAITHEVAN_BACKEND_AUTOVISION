@@ -9,6 +9,14 @@ export type UserTypeTS = {
   DiaChi: string;
 };
 
+export type CartTS = {
+  MSKH: string;
+  MSHH: string;
+  SoLuong: string;
+  MauSac: string;
+  Size: number;
+};
+
 export type HangHoaTS = {
   _id?: string;
   TenHH: string;
