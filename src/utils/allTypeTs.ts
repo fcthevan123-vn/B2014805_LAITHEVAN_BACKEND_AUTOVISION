@@ -21,8 +21,8 @@ export type HangHoaTS = {
   _id?: string;
   TenHH: string;
   MoTaHH: string;
-  Gia: number;
-  SoLuongHang: number;
+  Gia: string;
+  SoLuongHang: string;
   TrongLuong: number;
   ChatLieu: string;
   PhuHopVoi: string;
@@ -39,6 +39,25 @@ export type HinhHH = {
   _id?: string;
   TenHinh: string;
   UrlHinh: string;
+};
+
+export type DatHangTS = {
+  _id?: string;
+  MSKH: string;
+  MSNV: string;
+  SodonDH: string;
+  NgayGH: string;
+  NgayDH: string;
+};
+
+export type ChiTietDatHangTS = {
+  _id?: string;
+  MSKH: string;
+  MSHH: HangHoaTS;
+  Size: string;
+  MauSac: string;
+  SoLuong: string;
+  GiaDatHang: number;
 };
 
 export type ResTS<T> = {

@@ -5,14 +5,16 @@ const { Schema, models } = mongoose;
 
 const orderDetailSchema = new Schema(
   {
-    NgayDH: {
-      type: Date,
-      default: new Date(),
+    MSKH: { type: mongoose.Types.ObjectId, ref: "User" },
+    MSHH: { type: mongoose.Types.ObjectId, ref: "Product" },
+    Size: String,
+    MauSac: String,
+    SoLuong: String,
+    GiaDatHang: String,
+    GiamGia: {
+      type: String,
+      default: 0,
     },
-    NgayGH: Date,
-    TrangThaiDH: String,
-    MSKH: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-    MSNV: [{ type: mongoose.Types.ObjectId, ref: "Staff" }],
   },
   { timestamps: true }
 );

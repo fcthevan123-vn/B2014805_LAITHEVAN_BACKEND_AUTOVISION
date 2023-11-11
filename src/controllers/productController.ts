@@ -223,7 +223,7 @@ class ProductController {
 
   async handleGetProductsById(req: Request, res: Response) {
     const { id } = req.params;
-    console.log("id", id);
+
     if (!id) {
       return res.status(401).json({
         statusCode: 2,

@@ -1,4 +1,5 @@
 import { Cart } from "../models";
+import Product from "../models/Product";
 import { CartTS } from "../utils/allTypeTs";
 
 class CartServices {
@@ -7,6 +8,8 @@ class CartServices {
       const existedCart = await Cart.find({
         MSHH: MSHH,
         MSKH: MSKH,
+        MauSac: MauSac,
+        Size: Size,
       });
 
       if (existedCart.length > 0) {
@@ -71,6 +74,11 @@ class CartServices {
     try {
       const cartDoc = await Cart.find({
         MSKH: userId,
+      }).populate({
+        path: "MSHH",
+        populate: {
+          path: "HinhHH",
+        },
       });
       if (!cartDoc) {
         return {
@@ -81,6 +89,48 @@ class CartServices {
       return {
         statusCode: 0,
         message: "Lấy giỏ hàng thành công",
+        data: cartDoc,
+      };
+    } catch (error) {
+      const err = error as Error;
+      return {
+        statusCode: -1,
+        message: err.message,
+      };
+    }
+  }
+
+  async updateQuantityCart(cartId: string, MSHH: string, SoLuong: string) {
+    try {
+      const productDoc = await Product.findById(MSHH);
+      if (!productDoc) {
+        return {
+          statusCode: 2,
+          message: "Sản phẩm này không tồn tại",
+        };
+      }
+
+      if (productDoc.SoLuong < SoLuong) {
+        return {
+          statusCode: 3,
+          message: `Sản phẩm này chỉ có ${productDoc.SoLuong}, bạn đã chọn là ${SoLuong}`,
+        };
+      }
+
+      const cartDoc = await Cart.findByIdAndUpdate(cartId, {
+        SoLuong: SoLuong,
+      });
+
+      if (!cartDoc) {
+        return {
+          statusCode: 1,
+          message: "Cập nhật giỏ hàng thất bại",
+        };
+      }
+
+      return {
+        statusCode: 0,
+        message: "Cập nhật giỏ hàng thành công",
         data: cartDoc,
       };
     } catch (error) {

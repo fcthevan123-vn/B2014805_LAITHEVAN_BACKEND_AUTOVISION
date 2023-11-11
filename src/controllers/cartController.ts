@@ -55,6 +55,28 @@ class CartController {
         .json({ message: "Lỗi tại handleGetCartByUserId", err: err.message });
     }
   }
+
+  async handleUpdateCart(req: Request, res: Response) {
+    const { cartId, MSHH, SoLuong } = req.body;
+
+    try {
+      const response = await CartService.updateQuantityCart(
+        cartId,
+        MSHH,
+        SoLuong
+      );
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      console.log("err", err);
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleUpdateCart", err: err.message });
+    }
+  }
 }
 
 export default new CartController();

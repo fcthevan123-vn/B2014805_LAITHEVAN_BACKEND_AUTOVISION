@@ -4,8 +4,8 @@ const { Schema, models } = mongoose;
 // Bảng giỏ hàng
 const cartSchema = new Schema(
   {
-    MSKH: [{ type: mongoose.Types.ObjectId, ref: "User" }],
-    MSHH: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
+    MSKH: { type: mongoose.Types.ObjectId, ref: "User" },
+    MSHH: { type: mongoose.Types.ObjectId, ref: "Product" },
     Size: String,
     MauSac: String,
     SoLuong: String,

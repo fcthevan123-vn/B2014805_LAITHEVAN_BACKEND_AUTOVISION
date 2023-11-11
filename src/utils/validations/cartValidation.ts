@@ -15,6 +15,13 @@ const cartValidation = {
       id: yup.string().required("Điền thiếu id cart"),
     }),
   }),
+  updateCart: yup.object({
+    body: yup.object({
+      cartId: yup.string().required("Điền thiếu id cart"),
+      SoLuong: yup.number().required("Điền thiếu Số lượng"),
+      MSHH: yup.string().required("Điền thiếu MSHH"),
+    }),
+  }),
   getCart: yup.object({
     params: yup.object({
       id: yup.string().required("Điền thiếu id người dùng"),

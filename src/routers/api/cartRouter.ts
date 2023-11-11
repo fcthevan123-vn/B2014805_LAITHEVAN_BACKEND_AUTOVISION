@@ -19,6 +19,12 @@ router.delete(
   CartController.handleRemoveFromCart
 );
 
+router.patch(
+  "/update",
+  validate(cartValidation.updateCart),
+  CartController.handleUpdateCart
+);
+
 router.get(
   "/:id",
   validate(cartValidation.getCart),
