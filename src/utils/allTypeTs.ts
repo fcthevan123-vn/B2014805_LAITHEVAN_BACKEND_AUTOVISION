@@ -45,9 +45,13 @@ export type DatHangTS = {
   _id?: string;
   MSKH: string;
   MSNV: string;
-  SodonDH: string;
+  SodonDH: ChiTietDatHangTS[];
   NgayGH: string;
   NgayDH: string;
+  DiaChi: string;
+  TrangThai: string;
+  HoTenNguoiNhan: string;
+  SoDienThoai: string;
 };
 
 export type ChiTietDatHangTS = {
