@@ -17,4 +17,16 @@ router.get(
   userController.handleGetProfileUser
 );
 
+router.patch(
+  "/update",
+  validate(userValidation.updateProfile),
+  userController.handleUpdateProfile
+);
+
+router.patch(
+  "/change-password",
+  validate(userValidation.changePassword),
+  userController.handleChangePassword
+);
+
 export default router;

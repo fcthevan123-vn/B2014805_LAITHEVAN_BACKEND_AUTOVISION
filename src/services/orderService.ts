@@ -1,5 +1,6 @@
-import { Order } from "../models";
-import { DatHangTS } from "../utils/allTypeTs";
+import { Order, Product, User } from "../models";
+import { ChiTietDatHangTS } from "../utils/allTypeTs";
+import moment from "moment";
 
 class OrderServices {
   async createOrder({
@@ -109,21 +110,21 @@ class OrderServices {
       // const orderDoc = await Order.find({
       //   TrangThai: TrangThai,
       // })
-      //   .populate([
-      //     {
-      //       path: "SoDonDH",
-      //       populate: {
-      //         path: "MSHH",
-      //       },
+      // .populate([
+      //   {
+      //     path: "SoDonDH",
+      //     populate: {
+      //       path: "MSHH",
       //     },
-      //     {
-      //       path: "MSNV",
-      //     },
-      //     {
-      //       path: "MSKH",
-      //     },
-      //   ])
-      //   .sort({ createdAt: -1 });
+      //   },
+      //   {
+      //     path: "MSNV",
+      //   },
+      //   {
+      //     path: "MSKH",
+      //   },
+      // ])
+      // .sort({ createdAt: -1 });
 
       let orderDoc;
 
@@ -138,6 +139,9 @@ class OrderServices {
             },
             {
               path: "MSNV",
+            },
+            {
+              path: "MSKH",
             },
           ])
           .sort({ createdAt: -1 });
@@ -154,6 +158,9 @@ class OrderServices {
             },
             {
               path: "MSNV",
+            },
+            {
+              path: "MSKH",
             },
           ])
           .sort({ createdAt: -1 });
@@ -182,7 +189,20 @@ class OrderServices {
 
   async deleteOrder(id: string) {
     try {
-      const orderDoc = await Order.findById(id);
+      const orderDoc = await Order.findById(id).populate([
+        {
+          path: "SoDonDH",
+          populate: {
+            path: "MSHH",
+          },
+        },
+        {
+          path: "MSNV",
+        },
+        {
+          path: "MSKH",
+        },
+      ]);
 
       if (!orderDoc) {
         return {
@@ -190,6 +210,8 @@ class OrderServices {
           message: "Không tìm thấy đơn hàng",
         };
       }
+
+      const DonDHs: ChiTietDatHangTS[] = orderDoc.SoDonDH;
 
       if (orderDoc.TrangThai !== "Chờ xác nhận") {
         return {
@@ -203,10 +225,19 @@ class OrderServices {
         _id: id,
       });
 
+      for (const DonHang of DonDHs) {
+        const quantity =
+          parseInt(DonHang.SoLuong) + parseInt(DonHang.MSHH.SoLuongHang);
+        await Product.findByIdAndUpdate(DonHang.MSHH._id, {
+          SoLuongHang: quantity,
+        });
+      }
+
       return {
         statusCode: 0,
         message: "Xoá đơn hàng thành công",
         data: orderDoc,
+        DonDH: DonDHs,
       };
     } catch (error) {
       const err = error as Error;
@@ -222,13 +253,38 @@ class OrderServices {
       const orderDoc = await Order.findByIdAndUpdate(id, {
         TrangThai: TrangThai,
         MSNV: MSNV,
-      });
+      }).populate([
+        {
+          path: "SoDonDH",
+          populate: {
+            path: "MSHH",
+          },
+        },
+        {
+          path: "MSNV",
+        },
+        {
+          path: "MSKH",
+        },
+      ]);
 
       if (!orderDoc) {
         return {
           statusCode: 1,
           message: "Không tìm thấy đơn hàng",
         };
+      }
+
+      const DonDHs: ChiTietDatHangTS[] = orderDoc.SoDonDH;
+
+      if (TrangThai == "Đã huỷ") {
+        for (const DonHang of DonDHs) {
+          const quantity =
+            parseInt(DonHang.SoLuong) + parseInt(DonHang.MSHH.SoLuongHang);
+          await Product.findByIdAndUpdate(DonHang.MSHH._id, {
+            SoLuongHang: quantity,
+          });
+        }
       }
 
       return {
@@ -354,11 +410,82 @@ class OrderServices {
       return {
         statusCode: 0,
         message: "Lấy đơn hàng thành công",
-        data1: orderDoc,
         data: {
           totalOrder,
           totalPay,
           totalSucessOrder: totalSucessOrder.length,
+        },
+      };
+    } catch (error) {
+      console.error("Error in getUserStatistic:", error);
+      return {
+        statusCode: -1,
+        message: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }
+
+  async getAdminStatistic() {
+    try {
+      const orderDoc = await Order.find()
+        .populate([
+          {
+            path: "SoDonDH",
+            populate: {
+              path: "MSHH",
+            },
+          },
+          {
+            path: "MSNV",
+          },
+        ])
+        .sort({ createdAt: -1 });
+
+      if (!orderDoc.length) {
+        return {
+          statusCode: 1,
+          message: "Không tìm thấy đơn hàng",
+        };
+      }
+
+      const dailyOrder = orderDoc.filter((order) =>
+        moment(order.createdAt).isSame(moment(), "day")
+      );
+
+      const userDoc = await User.find();
+      const productDoc = await Product.find();
+
+      const totalPay = orderDoc.reduce((acc, order) => {
+        if (
+          order.TrangThai === "Đã giao hàng" ||
+          order.TrangThai === "Đã nhận hàng"
+        ) {
+          acc += order.SoDonDH.reduce(
+            (orderTotal: string, DonHang: { GiaDatHang: string }) =>
+              parseInt(orderTotal) + parseInt(DonHang.GiaDatHang),
+            0
+          );
+        }
+        return acc;
+      }, 0);
+
+      const totalOrder = orderDoc.length;
+      const totalSucessOrder = orderDoc.filter(
+        (order) =>
+          order.TrangThai === "Đã giao hàng" ||
+          order.TrangThai === "Đã nhận hàng"
+      );
+
+      return {
+        statusCode: 0,
+        message: "Lấy đơn hàng thành công",
+        data: {
+          totalOrder,
+          totalPay,
+          totalSucessOrder: totalSucessOrder.length,
+          allUsers: userDoc.length - 1,
+          dailyOrder: dailyOrder.length,
+          totalProduct: productDoc.length,
         },
       };
     } catch (error) {

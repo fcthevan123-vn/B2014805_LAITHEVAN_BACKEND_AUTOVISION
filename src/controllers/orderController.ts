@@ -3,13 +3,17 @@ import { CartService, OrderDetailService, OrderService } from "../services";
 
 class OrderController {
   async handleCreateOrder(req: Request, res: Response) {
-    const { MSKH, DonHang, DiaChi, SoDienThoai, HoTenKH } = req.body;
+    const { MSKH, DonHang, DiaChi, SoDienThoai, HoTenKH, isBuyNow } = req.body;
     try {
       const SoDonDH: string[] = [];
+
       for (const item of DonHang) {
         const createOrderDetail = await OrderDetailService.createOrderDetail(
           item
         );
+        if (createOrderDetail.statusCode !== 0) {
+          return res.status(401).json(createOrderDetail);
+        }
         SoDonDH.push(createOrderDetail.data._id);
       }
 
@@ -22,9 +26,13 @@ class OrderController {
       });
 
       if (response.statusCode === 0) {
-        for (const item of DonHang) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const createOrderDetail = await CartService.removeFromCart(item._id);
+        if (!isBuyNow) {
+          for (const item of DonHang) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const createOrderDetail = await CartService.removeFromCart(
+              item._id
+            );
+          }
         }
       }
 
@@ -33,6 +41,7 @@ class OrderController {
       }
       return res.status(401).json(response);
     } catch (error) {
+      console.log("error", error);
       const err = error as Error;
       return res
         .status(500)
@@ -71,6 +80,22 @@ class OrderController {
       return res
         .status(500)
         .json({ message: "Lỗi tại handleGetUserStatistic", err: err.message });
+    }
+  }
+
+  async handleGetAdminStatistic(req: Request, res: Response) {
+    try {
+      const response = await OrderService.getAdminStatistic();
+
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleGetAdminStatistic", err: err.message });
     }
   }
 

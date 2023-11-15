@@ -47,6 +47,11 @@ const orderValidation = {
       id: yup.string().required("Điền thiếu mã số đơn hàng"),
     }),
   }),
+  statisticUser: yup.object({
+    params: yup.object({
+      id: yup.string().required("Điền thiếu mã số khách hàng"),
+    }),
+  }),
 };
 
 export default orderValidation;

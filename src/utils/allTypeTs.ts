@@ -5,7 +5,7 @@ export type UserTypeTS = {
   email: string;
   password: string;
   type?: string;
-  SoDienThoai: number;
+  SoDienThoai: string;
   DiaChi: string;
 };
 

@@ -2,6 +2,7 @@ import express from "express";
 import validate from "../../utils/yupValidations";
 import { orderValidation } from "../../utils/validations";
 import { OrderController } from "../../controllers";
+import { checkToken } from "../../middlewares";
 
 const router = express.Router();
 
@@ -51,8 +52,10 @@ router.patch(
 
 router.get(
   "/statistic/:id",
-  // validate(orderValidation.confirmReceive),
+  validate(orderValidation.statisticUser),
   OrderController.handleGetUserStatistic
 );
+
+router.get("/admin-statistic", OrderController.handleGetAdminStatistic);
 
 export default router;

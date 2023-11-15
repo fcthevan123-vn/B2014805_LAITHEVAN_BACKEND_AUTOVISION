@@ -12,6 +12,16 @@ class CartServices {
         Size: Size,
       });
 
+      const productDoc = await Product.findById(MSHH);
+
+      if (parseInt(productDoc.SoLuongHang) < parseInt(SoLuong)) {
+        return {
+          statusCode: 3,
+          message:
+            "Sản phẩm bạn chọn không đủ số lượng, vui lòng tải lại trang",
+        };
+      }
+
       if (existedCart.length > 0) {
         return {
           statusCode: 2,
@@ -27,6 +37,7 @@ class CartServices {
         MauSac,
         Size,
       });
+
       if (!cartDoc) {
         return {
           statusCode: 1,

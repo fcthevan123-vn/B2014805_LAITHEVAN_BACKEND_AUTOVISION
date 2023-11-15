@@ -13,7 +13,6 @@ class OrderDetailServices {
       const productDoc = await Product.findById(MSHH._id);
 
       if (parseInt(productDoc.SoLuongHang) < parseInt(SoLuong)) {
-        console.log("productDoc.SoLuongHang", productDoc.SoLuongHang);
         return {
           statusCode: 2,
           message:
@@ -31,8 +30,6 @@ class OrderDetailServices {
         SoLuong,
         GiaDatHang: tongGia,
       });
-
-      console.log("productDoc", productDoc);
 
       const quantityRemain =
         parseInt(productDoc.SoLuongHang) - parseInt(SoLuong);
