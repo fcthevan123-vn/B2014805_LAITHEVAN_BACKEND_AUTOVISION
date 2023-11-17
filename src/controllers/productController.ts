@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import imageProductService from "../services/imageProductService";
-import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
-import streamifier from "streamifier";
+import { v2 as cloudinary } from "cloudinary";
 import * as dotenv from "dotenv";
 import { HangHoaTS, HinhHH, ResTS } from "../utils/allTypeTs";
 import { ProductService } from "../services";
@@ -241,6 +240,23 @@ class ProductController {
       return res
         .status(500)
         .json({ message: "Lỗi tại handleGetProductsById", err: err.message });
+    }
+  }
+
+  async handleSearchProduct(req: Request, res: Response) {
+    const { keyWord } = req.query;
+
+    try {
+      const response = await ProductService.searchProduct(keyWord as string);
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleSearchProduct", err: err.message });
     }
   }
 }

@@ -1,4 +1,3 @@
-import ImageProduct from "../models/ImageProduct";
 import Product from "../models/Product";
 import { HangHoaTS, ResTS } from "../utils/allTypeTs";
 import imageProductService from "./imageProductService";
@@ -192,6 +191,44 @@ class ProductServices {
         statusCode: 0,
         message: "Xoá sản phẩm thanh cong",
         data: productDocDelete,
+      };
+    } catch (error) {
+      const err = error as Error;
+      return {
+        statusCode: -1,
+        message: err.message,
+      };
+    }
+  }
+
+  async searchProduct(keyWord: string) {
+    try {
+      let productDoc;
+      if (keyWord.length > 0) {
+        productDoc = await Product.find({
+          TenHH: { $regex: new RegExp(keyWord, "i") },
+        }).populate({
+          path: "HinhHH",
+          model: "ImageProduct",
+        });
+      } else {
+        productDoc = await Product.find().populate({
+          path: "HinhHH",
+          model: "ImageProduct",
+        });
+      }
+
+      if (!productDoc) {
+        return {
+          statusCode: 1,
+          message: "Lấy danh sách sản phẩm thất bại",
+        };
+      }
+
+      return {
+        statusCode: 0,
+        message: "Lấy danh sách thành công",
+        data: productDoc,
       };
     } catch (error) {
       const err = error as Error;
