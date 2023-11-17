@@ -8,6 +8,7 @@ const userSchema = new Schema(
     password: String,
     SoDienThoai: String,
     DiaChi: String,
+    BiKhoa: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -63,7 +63,7 @@ class ImageProductService {
 
       // Xoá hình từ Cloudinary
       const result = await cloudinary.uploader.destroy(imageDoc.TenHinh);
-      console.log("result", result);
+
       if (!result || result.result !== "ok") {
         return {
           statusCode: 1,

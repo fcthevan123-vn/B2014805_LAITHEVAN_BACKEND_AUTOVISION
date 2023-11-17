@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserService } from "../services";
+import { StaffService, UserService } from "../services";
 
 class UserController {
   async handleCreateUser(req: Request, res: Response) {
@@ -80,6 +80,40 @@ class UserController {
       return res
         .status(500)
         .json({ message: "Lỗi tại handleChangePassword", err: err.message });
+    }
+  }
+
+  async handleGetAllUserByAdmin(req: Request, res: Response) {
+    const { id } = req.body;
+
+    try {
+      const response = await StaffService.getAllUser(id);
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleGetAllUserByAdmin", err: err.message });
+    }
+  }
+
+  async handleDeleteUserByAdmin(req: Request, res: Response) {
+    const { id, userId, status } = req.body;
+
+    try {
+      const response = await StaffService.LockUser(id, userId, status);
+      if (response.statusCode === 0) {
+        return res.status(200).json(response);
+      }
+      return res.status(401).json(response);
+    } catch (error) {
+      const err = error as Error;
+      return res
+        .status(500)
+        .json({ message: "Lỗi tại handleDeleteUserByAdmin", err: err.message });
     }
   }
 }

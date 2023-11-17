@@ -120,7 +120,7 @@ class OrderController {
 
   async handleDeleteOrder(req: Request, res: Response) {
     const { id } = req.params;
-    console.log("id", id);
+
     try {
       const response = await OrderService.deleteOrder(id);
 

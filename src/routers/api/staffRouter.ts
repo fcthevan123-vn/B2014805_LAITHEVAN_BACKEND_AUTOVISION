@@ -1,10 +1,11 @@
 import express from "express";
 
-import { AuthController } from "../../controllers";
+import { AuthController, UserController } from "../../controllers";
 import validate from "../../utils/yupValidations";
 import { userValidation } from "../../utils/validations";
 import { checkToken } from "../../middlewares";
 const router = express.Router();
+
 // /api/v1/staff
 
 router.get(
@@ -14,5 +15,9 @@ router.get(
 );
 
 router.get("/get-profile", checkToken, AuthController.handleGetProfileAdmin);
+
+router.post("/all-users", checkToken, UserController.handleGetAllUserByAdmin);
+
+router.post("/delete-user", checkToken, UserController.handleDeleteUserByAdmin);
 
 export default router;
