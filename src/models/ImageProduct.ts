@@ -5,6 +5,10 @@ const imageProductSchema = new Schema(
   {
     TenHinh: String,
     UrlHinh: String,
+    MSHH: {
+      type: String,
+      allowNull: true,
+    },
   },
   { timestamps: true }
 );

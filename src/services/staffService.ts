@@ -93,7 +93,7 @@ class StaffServices {
 
       return {
         statusCode: 0,
-        message: status
+        message: !status
           ? "Mở khoá người dùng thành công"
           : "Khoá người dùng thành công",
       };

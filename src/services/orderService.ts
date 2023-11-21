@@ -483,7 +483,7 @@ class OrderServices {
           totalOrder,
           totalPay,
           totalSucessOrder: totalSucessOrder.length,
-          allUsers: userDoc.length - 1,
+          allUsers: userDoc.length,
           dailyOrder: dailyOrder.length,
           totalProduct: productDoc.length,
         },
